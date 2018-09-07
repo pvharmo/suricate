@@ -1,7 +1,6 @@
 import React from 'react';
 import { Router, Route, Switch, NavLink } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { socket } from './socket';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -19,14 +18,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Gavel from '@material-ui/icons/Gavel';
 import People from '@material-ui/icons/People';
-import Dashboard from '@material-ui/icons/Dashboard';
 import SettingsSharp from '@material-ui/icons/SettingsSharp';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 
 const hist = createBrowserHistory();
 const drawerWidth = 230;
@@ -59,9 +51,6 @@ const styles = {
 class App extends React.Component {
   constructor() {
     super();
-
-    socket.on("loggedIn", ()=>{this.setState({login: false});});
-    socket.on("loggin-error", ()=>{this.setState({loginError: true});});
 
     this.state = {
       auth: true,
@@ -127,14 +116,6 @@ class App extends React.Component {
             <List
               component="nav"
               subheader={<ListSubheader component="div">Menu</ListSubheader>}>
-              <a target="_blank" href="http://localhost:9999/r/4">
-                <ListItem button>
-                  <ListItemIcon>
-                    <Dashboard />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Tableau de bord" />
-                </ListItem>
-              </a>
               <NavLink to="/membres">
                 <ListItem button>
                   <ListItemIcon>
