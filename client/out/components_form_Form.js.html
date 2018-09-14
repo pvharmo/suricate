@@ -1,0 +1,477 @@
+<!-- start:source.tmpl.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+		<title>components/form/Form.js</title>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/prism.min.css">
+		<link type="text/css" rel="stylesheet" href="css/template.min.css">
+		<script type="text/javascript">
+			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"FooDoc","systemSummary":"A Bootstrap and Handlebars based template for JSDoc3.","systemLogo":"","systemColor":"","navMembers":[{"kind":"class","title":"Classes","summary":"All documented classes."},{"kind":"external","title":"Externals","summary":"All documented external members."},{"kind":"global","title":"Globals","summary":"All documented globals."},{"kind":"mixin","title":"Mixins","summary":"All documented mixins."},{"kind":"interface","title":"Interfaces","summary":"All documented interfaces."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."},{"kind":"tutorial","title":"Tutorials","summary":"All available tutorials."}],"footer":"","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":true,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":false,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, longname, version, since","search":true,"favicon":null,"stylesheets":[],"scripts":[],"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true}};
+			window.DOCLET_TOC_ENABLED = false;
+			window.DOCLET_AFILTER_ENABLED = false;
+		</script>
+</head>
+<body>
+	<!-- start:navbar.hbs -->
+	<header class="navbar navbar-default navbar-fixed-top navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">
+					FooDoc
+				</a>
+				<!-- displayed on small devices -->
+				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="navbar-collapse collapse" id="topNavigation">
+				<ul class="nav navbar-nav">
+								<li class="dropdown">
+									<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Globals<b class="caret"></b></a>
+									<ul class="dropdown-menu">
+											<li><a href="global.html#hist">hist</a></li>
+									</ul>
+								</li>
+								<li class="dropdown">
+									<a href="list_class.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+									<ul class="dropdown-menu">
+											<li><a href="Form.html">Form</a></li>
+											<li><a href="View.html">View</a></li>
+									</ul>
+								</li>
+				</ul>
+					<!-- start:lunr-search-navbar.hbs -->
+					<form class="navbar-form navbar-right" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" id="lunr-search-input">
+							<div class="input-group-btn">
+								<button class="btn btn-default" id="lunr-search-submit">
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+					<!-- start:lunr-search-navbar.hbs -->		</div>
+		</div>
+	</header>
+	<!-- end:navbar.hbs -->		<div class="page-header">
+			<div class="container">
+				<span class="kind">source</span>
+				<h1><span class="name">components/form/Form.js</span></h1>
+			</div>
+		</div>
+	<div class="container content">
+		<div class="row">
+			<div class="col-md-12 main-content">
+		<section class="source-section">
+			<article></article>
+			<pre class="prettyprint source language-javascript line-numbers"><code class="language-javascript">import React from "react";
+
+// import moment from 'moment';
+// import 'moment/locale/fr';
+
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
+import Select from '@material-ui/core/Select';
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from '@material-ui/core/InputLabel';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+const styles = {
+  formControl: {
+    width: "100%"
+  },
+  datetime:{
+    rdt: {
+      position: "relative"
+    },
+    rdtPicker: {
+      display: "none",
+      position: "absolute",
+      width: 250,
+      padding: 4,
+      marginTop: 1,
+      zIndex: "99999 !important",
+      background: "#fff",
+      boxShadow: "0 1px 3px rgba(0,0,0,.1)",
+      border: "1px solid #f9f9f9"
+    }
+  }
+};
+
+
+/**
+ *  Component generating a form.
+ * @reactProp {collection} fields - Specifies the fields of the form
+ * @reactProp {object} values - Values to give to the form.
+ */
+class Form extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+
+    let values = this.props.values;
+
+    this.state = {
+      values: {...values},
+      confirmation: false
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+  // You don't have to do this check first, but it can help prevent an unneeded render
+    if (nextProps.values !== this.state.values) {
+      this.setState({ values: {...nextProps.values} });
+    }
+  }
+
+  /**
+   * handleChange - Handle change in textField, selectField and radioGroup
+   *
+   * @param  {React synthetic event} event
+   */
+  handleChange(event) {
+    let values = this.state.values;
+    values[event.target.name] = event.target.value;
+    this.setState(values);
+  }
+
+  /**
+   * handleCheck - Handle change in checkbox
+   *
+   * @param  {React synthetic event} event
+   */
+  handleCheck(event) {
+    let values = this.state.values;
+    values[event.target.name] = event.target.checked;
+    this.setState(values);
+  }
+
+
+  /**
+   * textField - Renders the textField
+   *
+   * @param  {object} field   Specifications for the textfield
+   * @param  {object} classes classeName from withStyles
+   * @reactProp {string} name Identifier for the textfield
+   * @reactProp {string} label Label of the input
+   * @reactProp {string} value Taken from the state. Value of the the input
+   * @reactProp {function} onChange Function that handles the change of value.
+   * @reactProp {string} type Type of the input. Supports all html input types.
+   * @return {component}      TextField component
+   */
+  textField(field, classes) {
+    return (
+      &lt;FormControl className={classes.formControl}>
+        &lt;TextField
+          id={field.name}
+          name={field.name}
+          label={field.label}
+          value={this.state.values[field.name] || ""}
+          onChange={this.handleChange.bind(this)}
+          type={field.type}
+          {...field.options}
+          fullWidth />
+      &lt;/FormControl>
+    );
+  }
+
+  /**
+   * selectField - Renders the textField
+   *
+   * @param  {object} field   Specifications for the textfield
+   * @param  {object} classes classeName from withStyles
+   * @reactProp {string} name Identifier for the textfield
+   * @reactProp {string} label Label of the input
+   * @reactProp {string} value Taken from the state. Value of the the input
+   * @reactProp {function} onChange Function that handles the change of value.
+   * @reactProp {string} type Type of the input. Supports all html input types.
+   * @reactProp {collection} items List of options to show in the dropdown.
+   * @reactProp {collection} items.label Label of the option.
+   * @reactProp {collection} items.value Value of the option.
+   * @return {component}      TextField component
+   */
+  selectField(field, classes) {
+    return (
+      &lt;FormControl className={classes.formControl}>
+        &lt;InputLabel htmlFor={field.name}>{field.label}&lt;/InputLabel>
+        &lt;Select
+          value={this.state.values[field.name] || ""}
+          name={field.name}
+          onChange={this.handleChange.bind(this)}
+          inputProps={{
+            id: field.name
+          }}>
+          {field.items.map((item)=> {
+            return &lt;MenuItem key={item.label + item.value} value={item.value}>{item.label}&lt;/MenuItem>;
+          })}
+        &lt;/Select>
+      &lt;/FormControl>
+    );
+  }
+
+  /**
+   * textField - Renders the textField
+   *
+   * @param  {object} field   Specifications for the textfield
+   * @param  {object} classes classeName from withStyles
+   * @reactProp {string} name Identifier for the textfield
+   * @reactProp {string} label Label of the input
+   * @reactProp {string} checked Taken from the state. Value of the the input.
+   * @reactProp {function} onChange Function that handles the change of value.
+   * @reactProp {string} type Type of the input. Supports all html input types.
+   * @return {component}      TextField component
+   */
+  checkbox(field, classes) {
+    return (
+      &lt;FormControl className={classes.formControl}>
+        &lt;FormControlLabel
+          control={
+            &lt;Checkbox
+              name={field.name}
+              checked={this.state.values[field.name] ? true : false}
+              onChange={this.handleCheck.bind(this)}
+            />
+          }
+          label={field.label}
+        />
+      &lt;/FormControl>
+    );
+  }
+
+  radioGroup(field, classes) {
+    return (
+      &lt;FormControl className={classes.formControl}>
+        &lt;RadioGroup
+          name={field.name}
+          onChange={this.handleChange.bind(this)}
+          value={this.state.values[field.name]}>
+          {field.items.map((item)=>{
+            return (
+              &lt;FormControlLabel
+                key={item.value}
+                control={
+                  &lt;Radio />
+                }
+                label={item.label}
+                value={item.value}
+              />
+            );
+          })}
+        &lt;/RadioGroup>
+      &lt;/FormControl>
+    );
+  }
+
+  button(field) {
+    return (
+      &lt;Button onClick={this.onClick.bind(this, field)} >{field.label}&lt;/Button>
+    );
+  }
+
+  title(field) {
+    return (
+      &lt;div>
+        &lt;Divider style={{marginBottom: 25}} />
+        &lt;Typography variant={field.variant} >{field.label}&lt;/Typography>
+      &lt;/div>
+    );
+  }
+
+  onClick(field) {
+    if (field.confirmation) {
+      this.setState({confirmation: true, afterConfirmation: field.onClick});
+    } else {
+      field.onClick();
+    }
+  }
+
+  submitButton(field) {
+    return (
+      &lt;Button type="submit" onClick={this.submit.bind(this)} >{field.label}&lt;/Button>
+    );
+  }
+
+  handleClose(dialog) {
+    this.setState({[dialog]: false});
+  }
+
+  confirm() {
+    this.handleClose("confirmation");
+    this.state.afterConfirmation();
+  }
+
+  confirmationDialog(field) {
+    return (
+      &lt;Dialog
+        open={this.state.confirmation}
+        onClose={this.handleClose.bind(this, "confirmation")}
+      >
+        {field.confirmationTitle &amp;&amp; &lt;DialogTitle id="alert-dialog-title">{field.confirmationTitle}&lt;/DialogTitle>}
+        &lt;DialogContent>
+          {field.confirmationText &amp;&amp;
+            &lt;DialogContentText id="alert-dialog-description">
+              {field.confirmationText}
+            &lt;/DialogContentText>
+          }
+        &lt;/DialogContent>
+        &lt;DialogActions>
+          &lt;Button onClick={this.handleClose.bind(this, "confirmation")} color="primary">
+            Annluer
+          &lt;/Button>
+          &lt;Button onClick={this.confirm.bind(this)} color="primary">
+            Confirmer
+          &lt;/Button>
+        &lt;/DialogActions>
+      &lt;/Dialog>
+    );
+  }
+
+  field(field, classes) {
+    switch (field.type) {
+    case "date":
+    case "number":
+    case "text":
+      return this.textField(field, classes);
+    case "datetime":
+      return this.datetime(field, classes);
+    case "select":
+      return this.selectField(field, classes);
+    case "checkbox":
+      return this.checkbox(field, classes);
+    case "button":
+      return this.button(field, classes);
+    case "submit":
+      return this.submitButton(field, classes);
+    case "radio":
+      return this.radioGroup(field, classes);
+    case "title":
+      return this.title(field, classes);
+    case "expansion":
+      return this.field();
+    default:
+      return &lt;div>Ce type de champs n'est pas pris en charge&lt;/div>;
+    }
+  }
+
+  submit() {
+    this.props.onSubmit(this.state.values);
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      &lt;Grid container spacing={16}>
+        {this.props.fields.map((field)=>{
+          if (!field.options) {
+            field.options = {};
+          }
+          if (!field.width) {
+            field.width = {xs:12};
+          }
+          if (field.type === "expansion-panel") {
+            return (
+              &lt;Grid key={field.title} item {...field.width}>
+                &lt;ExpansionPanel>
+                  &lt;ExpansionPanelSummary expandIcon={&lt;ExpandMoreIcon />}>
+                    &lt;Typography variant="title" >{field.title}&lt;/Typography>
+                  &lt;/ExpansionPanelSummary>
+                  &lt;ExpansionPanelDetails>
+                    &lt;Grid container spacing={16}>
+                      {field.fields.map((subfield)=>{
+                        if (!subfield.options) {
+                          subfield.options = {};
+                        }
+                        if (!subfield.width) {
+                          subfield.width = {xs:12};
+                        }
+                        return (
+                          &lt;Grid key={subfield.name + subfield.label} item {...subfield.width}>
+                            {this.field(subfield, classes)}
+                            {this.confirmationDialog(subfield)}
+                          &lt;/Grid>
+                        );
+                      })}
+                    &lt;/Grid>
+                  &lt;/ExpansionPanelDetails>
+                &lt;/ExpansionPanel>
+              &lt;/Grid>
+            );
+          } else {
+            return (
+              &lt;Grid key={field.name + field.label} item {...field.width}>
+                {this.field(field, classes)}
+                {this.confirmationDialog(field)}
+              &lt;/Grid>
+            );
+          }
+        })}
+      &lt;/Grid>
+    );
+  }
+}
+
+export default withStyles(styles)(Form);
+</code></pre>
+		</section>
+			</div>
+		</div>
+	</div>
+	<footer>
+				<div class="copyright">FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 12th Sep 2018 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/clipboard.min.js"></script>
+	<script src="js/prism.min.js"></script>
+	<script src="js/template.min.js"></script>
+		<!-- start:lunr-search-modal.hbs -->
+		<div class="modal fade" id="lunr-search-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Search results</h4>
+					</div>
+					<div class="modal-body" id="lunr-search-body">
+					</div>
+					<div class="modal-footer" id="lunr-search-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- end:lunr-search-modal.hbs -->		<script src="js/lunr.min.js"></script>
+	
+</body>
+</html>
+<!-- end:source.tmpl.hbs -->

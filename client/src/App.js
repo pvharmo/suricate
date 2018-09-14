@@ -1,6 +1,13 @@
 import React from 'react';
-import { Router, Route, Switch, NavLink } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
+// import { socket } from './socket.js';
+
+import mainMenu from './data/mainMenu.js';
+import views from './data/views.js';
+
+import Nav from './components/nav/Nav';
+import View from './components/view/View';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -13,19 +20,17 @@ import Menu from '@material-ui/core/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Gavel from '@material-ui/icons/Gavel';
-import People from '@material-ui/icons/People';
-import SettingsSharp from '@material-ui/icons/SettingsSharp';
+
 
 const hist = createBrowserHistory();
 const drawerWidth = 230;
 
-const styles = {
+const styles = theme => ({
   root: {
     flexGrow: 1,
+  },
+  nested: {
+    paddingLeft: theme.spacing.unit * 4,
   },
   flex: {
     flexGrow: 1,
@@ -46,7 +51,7 @@ const styles = {
     marginRight: 16,
     marginTop: 21
   }
-};
+});
 
 class App extends React.Component {
   constructor() {
@@ -58,13 +63,31 @@ class App extends React.Component {
     };
   }
 
-  handleChange = (event, checked) => {
-    this.setState({ auth: checked });
-  };
+  handleClose() {
+    this.setState({anchorEl: null})
+  }
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
+
+  handleToggle(key) {
+    this.setState({[key]: !this.state[key]});
+  }
+
+  routes(item) {
+    let route = (<Route path={item.link} render={()=> <View view={views[item.name]} />} key={item.name} />);
+    if (item.type === "collapse") {
+      route = item.submenu.map((submenu)=>{
+        let subroute = (<Route path={submenu.link} render={()=> <View view={views[submenu.name]} />} key={submenu.name} />);
+        if (submenu.type === "collapse") {
+          subroute = this.routes(submenu);
+        }
+        return subroute;
+      });
+    }
+    return route;
+  }
 
   render() {
     const { classes } = this.props;
@@ -103,10 +126,10 @@ class App extends React.Component {
                       horizontal: 'right',
                     }}
                     open={open}
-                    onClose={this.handleClose}
+                    onClose={this.handleClose.bind(this)}
                   >
-                    <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                    <MenuItem onClick={this.handleClose.bind(this)}>Profile</MenuItem>
+                    <MenuItem onClick={this.handleClose.bind(this)}>My account</MenuItem>
                   </Menu>
                 </div>
               )}
@@ -116,37 +139,14 @@ class App extends React.Component {
             <List
               component="nav"
               subheader={<ListSubheader component="div">Menu</ListSubheader>}>
-              <NavLink to="/membres">
-                <ListItem button>
-                  <ListItemIcon>
-                    <People />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Membres" />
-                </ListItem>
-              </NavLink>
-              <NavLink to="/depannages">
-                <ListItem button>
-                  <ListItemIcon>
-                    <Gavel />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Dépannages" />
-                </ListItem>
-              </NavLink>
-              <NavLink to="/administration">
-                <ListItem button>
-                  <ListItemIcon>
-                    <SettingsSharp />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Administration" />
-                </ListItem>
-              </NavLink>
+              <Nav menu={mainMenu} />
             </List>
           </Drawer>
           <div className={classes.mainContainer} >
             <Switch>
-              <Route path="/membres" />
-              <Route path="/depannages" />
-              <Route path="/administration" />
+              {mainMenu.map((route)=>{
+                return this.routes(route);
+              })}
             </Switch>
           </div>
         </div>
