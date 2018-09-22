@@ -1,13 +1,12 @@
 import React from 'react';
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-// import { socket } from './socket.js';
-
-import mainMenu from './data/mainMenu.js';
-import views from './data/views.js';
+// import query from './connector.js';
 
 import Nav from './components/nav/Nav';
 import View from './components/view/View';
+
+import { connect } from "react-redux";
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -54,8 +53,10 @@ const styles = theme => ({
 });
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+
 
     this.state = {
       auth: true,
@@ -76,10 +77,10 @@ class App extends React.Component {
   }
 
   routes(item) {
-    let route = (<Route path={item.link} render={()=> <View view={views[item.name]} />} key={item.name} />);
+    let route = (<Route path={item.link} render={()=> <View view={this.props.views.get(item.name)} />} key={item.name} />);
     if (item.type === "collapse") {
       route = item.submenu.map((submenu)=>{
-        let subroute = (<Route path={submenu.link} render={()=> <View view={views[submenu.name]} />} key={submenu.name} />);
+        let subroute = (<Route path={submenu.link} render={()=> <View viewName={submenu.name} view={this.props.views.get(submenu.name)} />} key={submenu.name} />);
         if (submenu.type === "collapse") {
           subroute = this.routes(submenu);
         }
@@ -90,7 +91,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const {classes} = this.props;
     const { auth, anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
@@ -139,15 +140,15 @@ class App extends React.Component {
             <List
               component="nav"
               subheader={<ListSubheader component="div">Menu</ListSubheader>}>
-              <Nav menu={mainMenu} />
+              {<Nav menu={this.props.mainMenu.toJS()} />}
             </List>
           </Drawer>
           <div className={classes.mainContainer} >
-            <Switch>
-              {mainMenu.map((route)=>{
-                return this.routes(route);
+            {<Switch>
+              {this.props.mainMenu.map((route)=>{
+                return this.routes(route.toJS());
               })}
-            </Switch>
+            </Switch>}
           </div>
         </div>
       </Router>
@@ -155,4 +156,9 @@ class App extends React.Component {
   }
 }
 
-export default withStyles(styles)(App);
+const mapStateToProps = (state) => ({
+  views: state.get('views'),
+  mainMenu: state.get("mainMenu")
+})
+
+export default connect(mapStateToProps, null)(withStyles(styles)(App));

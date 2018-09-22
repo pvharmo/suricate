@@ -19,18 +19,18 @@ const styles = theme => ({
  */
 class View extends React.Component {
 
-  module(module) {
-    switch (module.type) {
+  module(module, index) {
+    switch (module.get("type")) {
     case "form":
       return (
         <Card>
           <CardContent>
-            <Form fields={module.fields} data={module.data} />
+            <Form index={index} fields={module.get("fields")} data={module.get("data")} />
           </CardContent>
         </Card>
       );
     case "table":
-      return <Table columns={module.columns} />;
+      return <Table viewName={this.props.viewName} index={index} module={module} />;
     default:
       return <p>Type de module non reconnu</p>;
     }
@@ -42,10 +42,10 @@ class View extends React.Component {
     return (
       <div className={classes.root}>
         <Grid container spacing={24}>
-          {this.props.view.modules.map((module)=>{
+          {this.props.view.get("modules").map((module, index)=>{
             return (
-              <Grid item key={module.name}>
-                {this.module(module)}
+              <Grid item key={module.get("name")}>
+                {this.module(module, index)}
               </Grid>
             );
           })}

@@ -33,21 +33,21 @@ class EnhancedTableHead extends React.Component {
           {this.props.columns.map(column => {
             return (
               <TableCell
-                key={column.name}
-                numeric={column.numeric}
+                key={column.get("name")}
+                numeric={column.get("numeric")}
                 sortDirection={orderBy === column.name ? order : false}
               >
                 <Tooltip
                   title="Sort"
-                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                  placement={column.get("numeric") ? 'bottom-end' : 'bottom-start'}
                   enterDelay={300}
                 >
                   <TableSortLabel
-                    active={orderBy === column.name}
+                    active={orderBy === column.get("name")}
                     direction={order}
-                    onClick={this.createSortHandler(column.name)}
+                    onClick={this.createSortHandler(column.get("name"))}
                   >
-                    {column.label}
+                    {column.get("label")}
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>

@@ -22,8 +22,8 @@ class Row extends React.Component {
       {
         this.props.columns.map((column)=>{
           return (
-            <TableCell padding="checkbox" key={column.name}>
-              {this.props.data[column.name]}
+            <TableCell padding="checkbox" key={column.get("name")}>
+              {this.props.data[column.get("name")]}
             </TableCell>
           );
         })

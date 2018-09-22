@@ -4,7 +4,8 @@ import sort from 'fast-sort';
 import Row from './Row';
 import EnhancedTableHead from './TableHead';
 
-import data from '../../data/table';
+import { nextPage, changeRowsPerPage, selectAll, sortData, selectRow } from '../../redux/actions';
+import { connect } from "react-redux";
 
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -15,61 +16,55 @@ import Paper from '@material-ui/core/Paper';
 const styles = {};
 
 class EnhancedTable extends React.Component {
-  state = {
-    order: "asc",
-    orderBy: 'price',
-    selected: [],
-    page: 0,
-    rowsPerPage: 5,
-    allSelected: 0
-  };
 
   handleClick(id) {
-    let index = this.state.selected.indexOf(id);
-    let selected = this.state.selected;
+    let index = this.props.module.get("selected").indexOf(id);
+    let selected = [];
     if (index >= 0) {
       selected.splice(index, 1);
+      selected = this.props.module.get("selected").splice(index, 1);
     } else {
-      selected.push(id);
+      selected = this.props.module.get("selected").push(id);
+      // selected.push(id);
+      console.log(selected.toJS());
     }
     let allSelected = 1;
-    if (selected.length === 0) {
+    if (selected.size === 0) {
       allSelected = 0;
-    } else if (selected.length === data.length) {
-      console.log("test");
+    } else if (selected.size === this.props.data.length) {
       allSelected = 2;
     }
-    this.setState({selected, allSelected});
+    this.props.dispatch(selectRow({view: this.props.viewName, moduleIndex: this.props.index, selected, allSelected}));
   }
 
   handleChangePage(event, next) {
     if (next) {
-      this.setState({page: this.state.page + 1})
+      this.props.dispatch(nextPage({view: this.props.viewName, moduleIndex: this.props.index, page: this.props.module.get("page") + 1}));
     } else {
-      this.setState({page: this.state.page - 1})
+      this.props.dispatch(nextPage({view: this.props.viewName, moduleIndex: this.props.index, page: this.props.module.get("page") - 1}));
     }
   }
 
   handleChangeRowsPerPage(event) {
-    this.setState({ rowsPerPage: event.target.value });
+    this.props.dispatch(changeRowsPerPage({view: this.props.viewName, moduleIndex: this.props.index, rowsPerPage: event.target.value}));
   }
 
   handleSelectAllClick() {
-    if (this.state.selected.length < data.length) {
+    if (this.props.module.get("selected").length < this.props.data.length) {
       let selected = [];
-      for (var i = 0; i < data.length; i++) {
-        selected.push(data[i].id);
+      for (var i = 0; i < this.props.data.length; i++) {
+        selected.push(this.props.data[i].id);
       }
-      this.setState({selected, allSelected: 2});
+      this.props.dispatch(selectAll({view: this.props.viewName, moduleIndex: this.props.index, selected, allSelected: 2}));
 
     } else {
-      this.setState({selected: [], allSelected: 0})
+      this.props.dispatch(selectAll({view: this.props.viewName, moduleIndex: this.props.index, selected: [], allSelected: 0}));
     }
   }
 
   handleRequestSort(event, name) {
-    if (this.state.orderBy === name) {
-      if (this.state.order === "asc") {
+    if (this.props.module.get("orderBy") === name) {
+      if (this.props.module.get("order") === "asc") {
         this.sortData(name, "desc");
       } else {
         this.sortData(name, "asc");
@@ -80,38 +75,38 @@ class EnhancedTable extends React.Component {
   }
 
   sortData(orderBy, order) {
+    let data = [];
     if (order === "asc") {
-      sort(data).asc(orderBy);
+      data = sort(this.props.data).asc(orderBy);
     } else if (order === "desc") {
-      sort(data).desc(orderBy);
+      data = sort(this.props.data).desc(orderBy);
     }
-    this.setState({orderBy, order});
+    this.props.dispatch(sortData({view: this.props.viewName, moduleIndex: this.props.index, orderBy, order, data}));
   }
 
   render() {
-    const { classes } = this.props;
-    const { order, orderBy, selected, rowsPerPage, page, allSelected } = this.state;
+    const { classes, module } = this.props;
 
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
-              checked={allSelected}
-              order={order}
-              orderBy={orderBy}
+              checked={module.get("allSelected")}
+              order={module.get("order")}
+              orderBy={module.get("orderBy")}
               onSelectAllClick={this.handleSelectAllClick.bind(this)}
               onRequestSort={this.handleRequestSort.bind(this)}
-              columns={this.props.columns}
+              columns={module.get("columns")}
             />
             <TableBody>
-              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row)=>{
+              {this.props.data.slice(module.get("page") * module.get("rowsPerPage"), (module.get("page") + 1) * module.get("rowsPerPage")).map((row)=>{
                 return (
                   <Row
                     handleClick={this.handleClick.bind(this, row.id)}
                     data={row}
-                    columns={this.props.columns}
-                    selected={selected.find(x => row.id === x) ? true : false}
+                    columns={module.get("columns")}
+                    selected={module.get("selected").find(x => row.id === x) ? true : false}
                     key={row.id} />
                 );
               })}
@@ -120,9 +115,9 @@ class EnhancedTable extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
+          count={this.props.data.length}
+          rowsPerPage={module.get("rowsPerPage")}
+          page={module.get("page")}
           backIconButtonProps={{
             'aria-label': 'Previous Page',
           }}
@@ -137,4 +132,8 @@ class EnhancedTable extends React.Component {
   }
 }
 
-export default withStyles(styles)(EnhancedTable);
+const mapStateToProps = (state) => ({
+  data: state.get("data").toJS()
+})
+
+export default connect(mapStateToProps, null)(withStyles(styles)(EnhancedTable));

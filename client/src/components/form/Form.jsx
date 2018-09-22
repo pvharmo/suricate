@@ -58,7 +58,6 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
 
-
     let values = this.props.values;
 
     this.state = {
@@ -108,13 +107,13 @@ class Form extends React.Component {
     return (
       <FormControl className={classes.formControl}>
         <TextField
-          id={field.name}
-          name={field.name}
-          label={field.label}
-          value={this.state.values[field.name] || ""}
+          id={field.get("name")}
+          name={field.get("name")}
+          label={field.get("label")}
+          value={this.state.values[field.get("name")] || ""}
           onChange={this.handleChange.bind(this)}
-          type={field.type}
-          {...field.options}
+          type={field.get("type")}
+          {...field.get("options")}
           fullWidth />
       </FormControl>
     );
@@ -130,16 +129,16 @@ class Form extends React.Component {
   selectField(field, classes) {
     return (
       <FormControl className={classes.formControl}>
-        <InputLabel htmlFor={field.name}>{field.label}</InputLabel>
+        <InputLabel htmlFor={field.get("name")}>{field.get("label")}</InputLabel>
         <Select
-          value={this.state.values[field.name] || ""}
-          name={field.name}
+          value={this.state.values[field.get("name")] || ""}
+          name={field.get("name")}
           onChange={this.handleChange.bind(this)}
           inputProps={{
-            id: field.name
+            id: field.get("name")
           }}>
-          {field.items.map((item)=> {
-            return <MenuItem key={item.label + item.value} value={item.value}>{item.label}</MenuItem>;
+          {field.get("items").map((item)=> {
+            return <MenuItem key={item.get("label") + item.get("value")} value={item.get("value")}>{item.get("label")}</MenuItem>;
           })}
         </Select>
       </FormControl>
@@ -159,12 +158,12 @@ class Form extends React.Component {
         <FormControlLabel
           control={
             <Checkbox
-              name={field.name}
-              checked={this.state.values[field.name] ? true : false}
+              name={field.get("name")}
+              checked={this.state.values[field.get("name")] ? true : false}
               onChange={this.handleCheck.bind(this)}
             />
           }
-          label={field.label}
+          label={field.get("label")}
         />
       </FormControl>
     );
@@ -174,18 +173,18 @@ class Form extends React.Component {
     return (
       <FormControl className={classes.formControl}>
         <RadioGroup
-          name={field.name}
+          name={field.get("name")}
           onChange={this.handleChange.bind(this)}
           value={this.state.values[field.name]}>
-          {field.items.map((item)=>{
+          {field.get("items").map((item)=>{
             return (
               <FormControlLabel
-                key={item.value}
+                key={item.get("value")}
                 control={
                   <Radio />
                 }
-                label={item.label}
-                value={item.value}
+                label={item.get("label")}
+                value={item.get("value")}
               />
             );
           })}
@@ -196,7 +195,7 @@ class Form extends React.Component {
 
   button(field) {
     return (
-      <Button onClick={this.onClick.bind(this, field)} >{field.label}</Button>
+      <Button onClick={this.onClick.bind(this, field)} >{field.get("label")}</Button>
     );
   }
 
@@ -204,7 +203,7 @@ class Form extends React.Component {
     return (
       <div>
         <Divider style={{marginBottom: 25}} />
-        <Typography variant={field.variant} >{field.label}</Typography>
+        <Typography variant={field.variant} >{field.get("label")}</Typography>
       </div>
     );
   }
@@ -259,7 +258,7 @@ class Form extends React.Component {
   }
 
   field(field, classes) {
-    switch (field.type) {
+    switch (field.get("type")) {
     case "date":
     case "number":
     case "text":
@@ -295,30 +294,30 @@ class Form extends React.Component {
     return (
       <Grid container spacing={16}>
         {this.props.fields.map((field)=>{
-          if (!field.options) {
-            field.options = {};
+          // if (!field.get("options")) {
+          //   field.options = {};
+          // }
+          if (!field.get("width")) {
+            field.set("width", {xs:12});
           }
-          if (!field.width) {
-            field.width = {xs:12};
-          }
-          if (field.type === "expansion-panel") {
+          if (field.get("type") === "expansion-panel") {
             return (
               <Grid key={field.title} item {...field.width}>
                 <ExpansionPanel>
                   <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="title" >{field.title}</Typography>
+                    <Typography variant="title" >{field.get("title")}</Typography>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
                     <Grid container spacing={16}>
-                      {field.fields.map((subfield)=>{
-                        if (!subfield.options) {
-                          subfield.options = {};
-                        }
-                        if (!subfield.width) {
-                          subfield.width = {xs:12};
+                      {field.get("fields").map((subfield)=>{
+                        // if (!subfield.get("options")) {
+                        //   subfield.options = {};
+                        // }
+                        if (!subfield.get("width")) {
+                          subfield.set("width", {xs:12});
                         }
                         return (
-                          <Grid key={subfield.name + subfield.label} item {...subfield.width}>
+                          <Grid key={subfield.get("name") + subfield.get("label")} item {...subfield.width}>
                             {this.field(subfield, classes)}
                             {this.confirmationDialog(subfield)}
                           </Grid>
@@ -331,7 +330,7 @@ class Form extends React.Component {
             );
           } else {
             return (
-              <Grid key={field.name + field.label} item {...field.width}>
+              <Grid key={field.get("name") + field.get("label")} item {...field.get("width").toJS()}>
                 {this.field(field, classes)}
                 {this.confirmationDialog(field)}
               </Grid>

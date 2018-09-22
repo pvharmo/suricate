@@ -5,7 +5,6 @@ const data = [
   {id: 4, name: "La divine", price: 12},
   {id: 5, name: "La comédie", price: 12},
   {id: 6, name: "Test", price: 12},
-
 ]
 
 export default data;

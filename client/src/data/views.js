@@ -1,9 +1,8 @@
 const view = {authors:
   {
-    "name": "authors",
-    "includes": ["\\.(js|jsx)$"],
-    "modules": [
-      {"name": "form", "type": "form", "label": "Form", "fields": [
+    name: "authors",
+    modules: [
+      {name: "form", type: "form", label: "Form", fields: [
         {name: "prenom", label: "Prénom", type: "text", width:{xs: 4}},
         {name: "nom", label: "Nom", type: "text", width:{xs: 4}},
         {name: "sexe", label: "Sexe", type: "select", width:{xs: 2}, items: [
@@ -18,7 +17,8 @@ const view = {authors:
         {name: "telephone", label: "Téléphone", type: "text", width: {xs: 4}},
         {name: "courriel", label: "Courriel", type: "text", width: {xs: 4}}
       ], data: []},
-      {name: "listTable", type: "table", label: "List of books", columns: [
+      {name: "listTable", type: "table", label: "List of books",
+      page: 0, rowsPerPage: 5, selected: [], allSelected: 0, order: "asc", orderBy: "", columns: [
         {name: "name", label: "Nom", numeric: false},
         {name: "price", label: "Prix", numeric: true}
       ]}
