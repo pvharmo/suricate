@@ -3,7 +3,7 @@ const view = {authors:
     name: "authors",
     modules: [
       {name: "form", type: "form", label: "Form", fields: [
-        {name: "prenom", label: "Prénom", type: "text", width:{xs: 4}},
+        {name: "prenom", label: "Prénom", type: "text", width:{xs: 8}},
         {name: "nom", label: "Nom", type: "text", width:{xs: 4}},
         {name: "sexe", label: "Sexe", type: "select", width:{xs: 2}, items: [
           {label: "Homme", value: "H"},
@@ -15,7 +15,8 @@ const view = {authors:
         {name: "code_postal", label: "Code postal", type: "text", width: {xs:2}},
         {name: "ville", label: "Ville", type: "text", width: {xs:2}},
         {name: "telephone", label: "Téléphone", type: "text", width: {xs: 4}},
-        {name: "courriel", label: "Courriel", type: "text", width: {xs: 4}}
+        {name: "courriel", label: "Courriel", type: "text", width: {xs: 4}},
+        {name: "test", label: "test", type: "checkbox", width: {xs: 4}}
       ], data: []},
       {name: "listTable", type: "table", label: "List of books",
       page: 0, rowsPerPage: 5, selected: [], allSelected: 0, order: "asc", orderBy: "", columns: [

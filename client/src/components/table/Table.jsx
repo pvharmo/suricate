@@ -25,8 +25,6 @@ class EnhancedTable extends React.Component {
       selected = this.props.module.get("selected").splice(index, 1);
     } else {
       selected = this.props.module.get("selected").push(id);
-      // selected.push(id);
-      console.log(selected.toJS());
     }
     let allSelected = 1;
     if (selected.size === 0) {

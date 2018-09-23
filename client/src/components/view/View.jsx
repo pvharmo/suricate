@@ -1,6 +1,8 @@
 import React from 'react';
-import Form from '../form/Form';
+// import Form from '../form/Form';
 import Table from '../table/Table';
+import MuiTable from '../table/MuiTable';
+import FormGenerator from '../form/FormGenerator';
 
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -25,12 +27,12 @@ class View extends React.Component {
       return (
         <Card>
           <CardContent>
-            <Form index={index} fields={module.get("fields")} data={module.get("data")} />
+            <FormGenerator index={index} fields={module.get("fields")} data={module.get("data")} />
           </CardContent>
         </Card>
       );
     case "table":
-      return <Table viewName={this.props.viewName} index={index} module={module} />;
+      return <MuiTable viewName={this.props.viewName} index={index} module={module} />;
     default:
       return <p>Type de module non reconnu</p>;
     }

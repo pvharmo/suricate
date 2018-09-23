@@ -1,8 +1,12 @@
 import React from 'react';
 import MUIDataTable from "mui-datatables";
+import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import Edit from '@material-ui/icons/Edit';
 
+const styles = {};
 
-class MuiTable extends React.component {
+class MuiTable extends React.Component {
   constructor(props) {
     super(props);
     this.columns = this.props.columns.push(
@@ -32,6 +36,7 @@ class MuiTable extends React.component {
   }
 
   render() {
+    const options = {}
     const datatable = this.datatable(this.colonnes, this.state.depannages);
     return (
       <MUIDataTable
@@ -43,3 +48,9 @@ class MuiTable extends React.component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  data: state.get("data").toJS()
+})
+
+export default connect(mapStateToProps, null)(withStyles(styles)(MuiTable));
