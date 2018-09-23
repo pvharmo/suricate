@@ -4,6 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Edit from '@material-ui/icons/Edit';
 
+import { connect } from "react-redux";
+
 const styles = {};
 
 class MuiTable extends React.Component {
@@ -37,7 +39,7 @@ class MuiTable extends React.Component {
 
   render() {
     const options = {}
-    const datatable = this.datatable(this.colonnes, this.state.depannages);
+    const datatable = this.datatable(/*this.colonnes*/ this.props.module.get("columns"), this.state.depannages);
     return (
       <MUIDataTable
         title={this.props.name}
