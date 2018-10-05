@@ -3,8 +3,8 @@ import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 // import query from './connector.js';
 
-import Nav from './components/nav/Nav';
-import View from './components/view/View';
+import Nav from 'components/nav/Nav';
+import View from 'components/view/View';
 
 import { connect } from "react-redux";
 

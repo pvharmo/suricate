@@ -1,7 +1,13 @@
-// import openSocket from 'socket.io-client';
-//
-// const socket = openSocket('http://localhost:5000');
+import strapiConnector from 'connectors/strapi';
 
-export default function query(name, options) {
-  // socket.emit(name, options);
+const connection = "strapi";
+
+export default function query(query, options) {
+  switch (connection) {
+  case "strapi":
+    strapiConnector(query, options);
+    break;
+  default:
+
+  }
 }

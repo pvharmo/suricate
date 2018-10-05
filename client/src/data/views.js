@@ -1,30 +1,84 @@
-const view = {authors:
-  {
+
+const view = {
+  authors: {
     name: "authors",
     modules: [
-      {name: "form", type: "form", label: "Form", fields: [
-        {name: "prenom", label: "Prénom", type: "text", width:{xs: 8}},
-        {name: "nom", label: "Nom", type: "text", width:{xs: 4}},
-        {name: "sexe", label: "Sexe", type: "select", width:{xs: 2}, items: [
-          {label: "Homme", value: "H"},
-          {label: "Femme", value: "F"},
-          {label: "Autre", value: "A"}
-        ]},
-        {name: "date_naissance", label: "Date de naissance", type: "date", width: {xs: 2}},
-        {name: "adresse", label: "Adresse", type: "text", width: {xs: 4}},
-        {name: "code_postal", label: "Code postal", type: "text", width: {xs:2}},
-        {name: "ville", label: "Ville", type: "text", width: {xs:2}},
-        {name: "telephone", label: "Téléphone", type: "text", width: {xs: 4}},
-        {name: "courriel", label: "Courriel", type: "text", width: {xs: 4}},
-        {name: "test", label: "test", type: "checkbox", width: {xs: 4}}
-      ], data: []},
-      {name: "listTable", type: "table", label: "List of books",
-      page: 0, rowsPerPage: 5, selected: [], allSelected: 0, order: "asc", orderBy: "", columns: [
-        {name: "name", label: "Nom", numeric: false},
-        {name: "price", label: "Prix", numeric: true}
-      ]}
-    ]
+      {
+        name: "listTable",
+        type: "table",
+        label: "List of books",
+        page: 0,
+        rowsPerPage: 5,
+        selected: [],
+        allSelected: 0,
+        order: "asc",
+        orderBy: "",
+        collection: "books",
+        httpServer: "http://localhost:1337/",
+        options: { print: false, download: false, selectableRows: false},
+        columns: [
+          {name: "name", label: "Nom", numeric: false},
+          {name: "price", label: "Prix", numeric: true}
+        ]
+      }
+    ],
+    dialogs: [
+      {
+        name: "new-book",
+        open: false,
+        title: "Nouveau livre",
+        modules: [
+          {
+            name: "new-book",
+            type: "form",
+            label: "Nouveau livre",
+            onSubmit: [
+              {
+                action: "insertData",
+                collection: "books",
+                httpServer: "http://localhost:1337/",
+              },
+              {
+                action: "closeDialog", dialog: "new-book"
+              }
+            ],
+            fields: [
+              {name: "name", label: "Nom", type: "text", width:{xs: 8}},
+              {name: "price", label: "Prix", type: "number", width:{xs: 4}},
+              {name: "submit", label: "Enregistrer", type: "submit", width: {xs:4}}
+            ]
+          }
+        ]
+      },
+      {
+        name: "edit-book",
+        open: false,
+        title: "Éditer le livre",
+        modules: [
+          {
+            name: "edit-book",
+            type: "form",
+            label: "Modifier le livre",
+            onSubmit: [{action: "modifyData", options: {
+              collection: "books"
+            }}, {action: "toggleDialog", dialog: "edit-book"}],
+            fields: [
+              {name: "name", label: "Nom", type: "text", width:{xs: 8}},
+              {name: "price", label: "Prix", type: "number", width:{xs: 4}},
+              {name: "submit", label: "Enregistrer", type: "submit", width: {xs:4}}
+            ]
+          }
+        ]
+      }
+    ],
+    actionButton: [{
+      action: "openDialog",
+      dialog: "new-book"
+    }]
+  },
+  settings: {
+    collections: ["books"]
   }
-}
+};
 
-export default view
+export default view;
