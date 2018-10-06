@@ -2,11 +2,17 @@
 const view = {
   authors: {
     name: "authors",
+    defaultValues: [],
     modules: [
       {
         name: "listTable",
         type: "table",
         label: "List of books",
+        onClickRow: [
+          {action: "SET_DEFAULT_VALUES", module: "edit-book"},
+          {action: "OPEN_DIALOG", dialog: "edit-book"}
+        ],
+        width: {xs: 12},
         page: 0,
         rowsPerPage: 5,
         selected: [],
@@ -34,18 +40,21 @@ const view = {
             label: "Nouveau livre",
             onSubmit: [
               {
-                action: "insertData",
+                action: "INSERT_RECORD",
                 collection: "books",
                 httpServer: "http://localhost:1337/",
               },
               {
-                action: "closeDialog", dialog: "new-book"
+                action: "CLOSE_DIALOG", dialog: "new-book"
               }
             ],
             fields: [
               {name: "name", label: "Nom", type: "text", width:{xs: 8}},
               {name: "price", label: "Prix", type: "number", width:{xs: 4}},
-              {name: "submit", label: "Enregistrer", type: "submit", width: {xs:4}}
+              {name: "submit", label: "Enregistrer", type: "submit", width: {xs:4}},
+              {name: "cancel", label: "Annuler", type: "button", width: {xs:4}, onClick: [{
+                action: "CLOSE_DIALOG", dialog: "new-book"
+              }]}
             ]
           }
         ]
@@ -59,20 +68,34 @@ const view = {
             name: "edit-book",
             type: "form",
             label: "Modifier le livre",
-            onSubmit: [{action: "modifyData", options: {
-              collection: "books"
-            }}, {action: "toggleDialog", dialog: "edit-book"}],
+            onSubmit: [
+              {
+                action: "MODIFY_DATA",
+                collection: "books",
+                httpServer: "http://localhost:1337/",
+              },
+              {
+                action: "CLOSE_DIALOG", dialog: "edit-book"
+              }
+            ],
             fields: [
               {name: "name", label: "Nom", type: "text", width:{xs: 8}},
               {name: "price", label: "Prix", type: "number", width:{xs: 4}},
-              {name: "submit", label: "Enregistrer", type: "submit", width: {xs:4}}
+              {name: "submit", label: "Enregistrer", type: "submit", width: {xs:4}},
+              {name: "delete", label: "Delete", type: "button", width: {xs:4}, onClick: [
+                {action: "CLOSE_DIALOG", dialog: "edit-book"},
+                {action: "DELETE_RECORD", collection: "books"}
+              ]},
+              {name: "cancel", label: "Annuler", type: "button", width: {xs:4}, onClick: [{
+                action: "CLOSE_DIALOG", dialog: "edit-book"
+              }]}
             ]
           }
         ]
       }
     ],
     actionButton: [{
-      action: "openDialog",
+      action: "OPEN_DIALOG",
       dialog: "new-book"
     }]
   },

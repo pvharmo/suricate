@@ -3,10 +3,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 // import Form from '../form/Form'
 // import Table from '../table/Table'
-import MuiTable from 'components/table/MuiTable';
-import FormGenerator from 'components/form/FormGenerator';
+import MuiTable from 'modules/MuiTable/MuiTable';
+import FormGenerator from 'modules/form/FormGenerator';
 import { connect } from "react-redux";
-import actionsHandler from 'actionsHandler';
+import actionsHandler from 'redux/actions';
 import { fromJS } from 'immutable';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -43,7 +43,7 @@ class View extends React.Component {
         </Card>
       );
     case "table":
-      return <MuiTable viewName={this.props.viewName} index={index} module={module} />;
+      return <MuiTable viewName={this.props.viewName} view={this.props.view} index={index} module={module} />;
     default:
       return <p>Type de module non reconnu</p>;
     }

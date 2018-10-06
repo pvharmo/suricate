@@ -3,11 +3,11 @@ import MUIDataTable from "mui-datatables";
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Edit from '@material-ui/icons/Edit';
-// import data from 'data/table';
 import { connect } from "react-redux";
-import { bindActionCreators } from 'redux'
-import { editRow } from 'redux/actions';
 import query from 'connector';
+import actionsHandler from 'redux/actions';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
 
 import db from 'db';
 
@@ -25,7 +25,7 @@ class MuiTable extends React.Component {
 
     db.on('changes', () => {
       this.data();
-    })
+    });
 
     this.state = {
       dbUpdate: 0
@@ -47,7 +47,8 @@ class MuiTable extends React.Component {
 
   async edit(id) {
     let data = await db.books.where({id}).toArray();
-    this.props.actions.editRow({view: this.props.viewName, moduleIndex: this.props.index, values:data})
+    actionsHandler(this.props.view, this.props.module.get("onClickRow"), {values: data[0]});
+    // this.props.actions.editRow({view: this.props.viewName, moduleIndex: this.props.index, values:data});
   }
 
   datatable (columns, data) {
@@ -84,12 +85,13 @@ class MuiTable extends React.Component {
   }
 }
 
+MuiTable.propTypes ={
+  view: ImmutablePropTypes.map,
+  module: ImmutablePropTypes.map
+};
+
 const mapStateToProps = (state) => ({
   data: state.get("data").toJS()
-})
+});
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({editRow}, dispatch)
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MuiTable));
+export default connect(mapStateToProps, null)(withStyles(styles)(MuiTable));

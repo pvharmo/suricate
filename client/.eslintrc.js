@@ -32,6 +32,9 @@ module.exports = {
             "error",
             "always"
         ],
+        "no-unused-vars": [
+          "warn"
+        ]
         // "react/prop-types": [0]
     }
 };

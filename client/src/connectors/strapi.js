@@ -8,18 +8,30 @@ const strapiConnector = (query, options) => {
   case "getData":
     getData(options);
     break;
-  case "insertData":
-    insertData(options);
+  case "insertRecord":
+    insertRecord(options);
+    break;
+  case "modifyData":
+    modifyData(options);
+    break;
+  case "deleteRecord":
+    deleteRecord(options);
     break;
   default:
 
   }
 };
 
-const insertData = (options) => {
-  strapi.request('post', '/' + options.collection, {
-    data: options.values
-  });
+const insertRecord = (options) => {
+  strapi.createEntry(options.action.get("collection"), options.values);
+};
+
+const modifyData = (options) => {
+  strapi.updateEntry(options.action.get("collection"), options.values.id, options.values);
+};
+
+const deleteRecord = (options) => {
+  strapi.deleteEntry(options.action.get("collection"), options.id);
 };
 
 const getData = async (options) => {

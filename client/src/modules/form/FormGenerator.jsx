@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Formik, Field, Form } from 'formik';
-import actionsHandler from 'actionsHandler';
+import actionsHandler from 'redux/actions';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -28,6 +28,9 @@ const styles = {
     width: "100%"
   }
 };
+
+let currentView = {};
+// let currentModule = {};
 
 // TODO: improve performance. Currently renders 4 times for every key press
 
@@ -128,9 +131,12 @@ const radioGroup = (field, options, classes) => {
   );
 };
 
-const button = (field, options) => {
+const button = (field, form, options) => {
+  const handleOnClick = () => {
+    actionsHandler(currentView, options.get("onClick"), {values: form.values});
+  };
   return (
-    <Button onClick={this.onClick.bind(this, field)} >{options.get("label")}</Button>
+    <Button onClick={handleOnClick.bind(this)} >{options.get("label")}</Button>
   );
 };
 
@@ -162,7 +168,7 @@ const fieldSelector = ({field, form, options, classes}) => {
   case "checkbox":
     return checkbox(field, options, classes);
   case "button":
-    return button(field, options, classes);
+    return button(field, form, options, classes);
   case "submit":
     return submitButton(field, form, options, classes);
   case "radio":
@@ -177,14 +183,19 @@ const fieldSelector = ({field, form, options, classes}) => {
 };
 
 const FormGenerator = ({view, data, classes, module, ...options}) => {
+  // console.log(view.toJS());
+  // console.log(module.toJS());
+  currentView = view;
+  // currentModule = module;
+  let defaultValues = view.get("defaultValues").find(function (obj){return obj.module === module.get("name");});
+  if (defaultValues) {
+    defaultValues = defaultValues.values;
+  }
   return (
     <Formik
-      initialValues={data}
+      initialValues={defaultValues}
       onSubmit={(values, actions)=>{
         actionsHandler(view, module.get("onSubmit"), {values});
-        // for (var i = 0; i < module.get("onSubmit").length; i++) {
-        //   module.get("onSubmit")[i].action({values, ...actions[i].params});
-        // }
       }}
       enableReinitialize
       render={({errors, touched, isSubmitting}) => (
@@ -241,8 +252,4 @@ FormGenerator.propTypes ={
   options: PropTypes.object
 };
 
-// const mapDispatchToProps = (dispatch) => ({
-//   reduxActions: bindActionCreators(actions, dispatch)
-// });
-
-export default /*connect(null, mapDispatchToProps)*/(withStyles(styles)(FormGenerator));
+export default withStyles(styles)(FormGenerator);
