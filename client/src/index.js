@@ -27,6 +27,14 @@ export const store = createStore(
   )
 );
 
+if (process.env.NODE_ENV !== 'production') {
+  if (module.hot) {
+    module.hot.accept('./redux/reducers', () => {
+      store.replaceReducer(rootReducer);
+    });
+  }
+}
+
 sagaMiddleware.run(rootSaga);
 
 const render = () => {
@@ -45,17 +53,6 @@ registerServiceWorker();
 
 if (module.hot) {
   module.hot.accept('./App', () => {
-    /* For Webpack 2.x
-       Need to disable babel ES2015 modules transformation in .babelrc
-       presets: [
-         ["es2015", { "modules": false }]
-       ]
-    */
     render();
-
-    /* For Webpack 1.x
-    const NextApp = require('./App').default
-    renderWithHotReload(NextApp)
-    */
   });
 }

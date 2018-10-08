@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Router, Route, Switch } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import { Route, Switch } from "react-router-dom";
 
 import View from 'components/View';
 
@@ -10,9 +9,6 @@ import { connect } from "react-redux";
 
 import { withStyles } from '@material-ui/core/styles';
 
-
-
-const hist = createBrowserHistory();
 
 const styles = theme => ({
   root: {
