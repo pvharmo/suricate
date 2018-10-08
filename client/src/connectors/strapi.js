@@ -5,6 +5,9 @@ const strapi = new Strapi('http://localhost:1337');
 
 const strapiConnector = (query, options) => {
   switch (query) {
+  case "login":
+    return login(options);
+    // break;
   case "getData":
     getData(options);
     break;
@@ -22,16 +25,20 @@ const strapiConnector = (query, options) => {
   }
 };
 
+const login = async ({username, password}) => {
+  return await strapi.login(username, password);
+};
+
 const insertRecord = (options) => {
-  strapi.createEntry(options.action.get("collection"), options.values);
+  strapi.createEntry(options.collection, options.values);
 };
 
 const modifyData = (options) => {
-  strapi.updateEntry(options.action.get("collection"), options.values.id, options.values);
+  strapi.updateEntry(options.collection, options.values.id, options.values);
 };
 
 const deleteRecord = (options) => {
-  strapi.deleteEntry(options.action.get("collection"), options.id);
+  strapi.deleteEntry(options.collection, options.id);
 };
 
 const getData = async (options) => {

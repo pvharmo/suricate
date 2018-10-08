@@ -5,8 +5,7 @@ const connection = "strapi";
 export default function query(query, options) {
   switch (connection) {
   case "strapi":
-    strapiConnector(query, options);
-    break;
+    return strapiConnector(query, options);
   default:
 
   }

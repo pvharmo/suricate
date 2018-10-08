@@ -160,6 +160,7 @@ const fieldSelector = ({field, form, options, classes}) => {
   case "date":
   case "number":
   case "text":
+  case "password":
     return textField(field, options, classes);
   // case "datetime":
   //   return datetime(field, options.classes);
@@ -183,13 +184,16 @@ const fieldSelector = ({field, form, options, classes}) => {
 };
 
 const FormGenerator = ({view, data, classes, module, ...options}) => {
-  // console.log(view.toJS());
-  // console.log(module.toJS());
   currentView = view;
-  // currentModule = module;
-  let defaultValues = view.get("defaultValues").find(function (obj){return obj.module === module.get("name");});
-  if (defaultValues) {
-    defaultValues = defaultValues.values;
+  let defaultValues = {};
+  if (view) {
+    defaultValues = view.get("defaultValues");
+    if (defaultValues) {
+      defaultValues = defaultValues.find(function (obj){return obj.module === module.get("name");});
+      if (defaultValues) {
+        defaultValues = defaultValues.values;
+      }
+    }
   }
   return (
     <Formik

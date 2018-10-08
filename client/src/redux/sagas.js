@@ -1,22 +1,30 @@
 import query from 'connector';
-import { put, takeEvery, all } from 'redux-saga/effects';
+import { put, call, takeEvery, all } from 'redux-saga/effects';
 
 export function* insertRecord({payload}){
-  yield query("insertRecord", payload);
+  let values = payload.values;
+  let collection = payload.action.get("collection");
+  yield query("insertRecord", {values, collection});
   // yield query( "insertData", {values:payload.values, collection: payload.action.get("collection")});
 }
 
 export function* modifyRecord({payload}) {
-  yield query("modifyRecord", {payload});
+  let values = payload.values;
+  let collection = payload.action.get("collection");
+  yield query("modifyRecord", {values, collection});
 }
 
 function* deleteRecord({payload}) {
-  yield query("deleteRecord", {payload});
+  let values = payload.values;
+  let collection = payload.action.get("collection");
+  yield query("deleteRecord", {values, collection});
 }
 
 function* login({payload}) {
-  yield query("login", payload);
-  yield put({type: "SAVE_LOGIN"});
+  // let username = payload.username;
+  // let password = payload.password;
+  const auth = yield call(query, "login");
+  yield put({type: "SAVE_LOGIN", payload:{auth, ...payload}});
 }
 
 export default function* rootSaga() {

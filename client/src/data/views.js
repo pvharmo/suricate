@@ -1,5 +1,23 @@
 
 const view = {
+  login: {
+    name: "login",
+    template: "login",
+    modules: [
+      {
+        name: "login",
+        type: "form",
+        label: "Connection",
+        onSubmit: [{action: "LOGIN"}],
+        fields: [
+          {name: "username", label: "Nom d'utilisateur", type: "text", width: {xs:12}},
+          {name: "password", label: "Mot de passe", type: "password", width: {xs:12}},
+          {name: "submit", type: "submit", label: "Connection", width:{xs:4}}
+        ]
+      }
+    ],
+    dialogs: []
+  },
   authors: {
     name: "authors",
     defaultValues: [],
@@ -95,7 +113,7 @@ const view = {
       }
     ],
     actionButton: [{
-      action: "OPEN_DIALOG",
+      action: "LOGIN",
       dialog: "new-book"
     }]
   },

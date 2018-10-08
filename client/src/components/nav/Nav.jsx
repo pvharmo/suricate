@@ -1,27 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NavLink } from "react-router-dom";
 
+
 import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
+const drawerWidth = 230;
+
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  nested: {
-    paddingLeft: theme.spacing.unit * 4,
-  },
-  flex: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
+  drawerStyle: {
+    width: drawerWidth
   }
 });
 
@@ -71,17 +67,33 @@ class Nav extends React.Component {
   }
 
   render() {
+    const {classes} = this.props;
     let nestingLevel = 0;
     return (
-      this.props.menu.map((item)=>{
-        let menu = this.link(item, nestingLevel);
-          if (item.type === "collapse") {
-            menu = this.collapse(item, nestingLevel);
-          }
-          return menu;
-      })
+      <Drawer variant="permanent" classes={{paper: classes.drawerStyle}}>
+        <List
+          component="nav"
+          subheader={<ListSubheader component="div">Menu</ListSubheader>}>
+          {this.props.menu.map((item)=>{
+            let menu = <div key={item.name}></div>;
+            if (item.type !== "hidden") {
+              menu = this.link(item, nestingLevel);
+              if (item.type === "collapse") {
+                menu = this.collapse(item, nestingLevel);
+              }
+            }
+            return menu;
+          })}
+        </List>
+      </Drawer>
+
     );
   }
 }
+
+Nav.propTypes ={
+  menu: PropTypes.array,
+  classes: PropTypes.object,
+};
 
 export default withStyles(styles)(Nav);

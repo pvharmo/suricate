@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 import actionsHandler from 'redux/actions';
 import { fromJS } from 'immutable';
 
+import bg from 'bg.jpg';
+
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -22,6 +24,12 @@ import AddIcon from '@material-ui/icons/Add';
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    height: "100vh"
+  },
+  container: {
+    height: "100%",
+    background: "url(" + bg + ")",
+    backgroundPosition: "center"
   },
   fab: {
     position: 'absolute',
@@ -30,17 +38,13 @@ const styles = theme => ({
   },
 });
 
-class View extends React.Component {
+class Login extends React.Component {
 
   module(module, index) {
     switch (module.get("type")) {
     case "form":
       return (
-        <Card>
-          <CardContent>
-            <FormGenerator index={index} view={this.props.view} module={module} fields={module.get("fields")} data={this.props.view.get("editValue")} />
-          </CardContent>
-        </Card>
+        <FormGenerator index={index} view={this.props.view} module={module} fields={module.get("fields")} data={this.props.view.get("editValue")} />
       );
     case "table":
       return <MuiTable viewName={this.props.viewName} view={this.props.view} index={index} module={module} />;
@@ -58,14 +62,22 @@ class View extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Grid container spacing={24}>
-          {this.props.view.get("modules").map((module, index)=>{
-            return (
-              <Grid item key={module.get("name")}>
-                {this.module(module, index)}
-              </Grid>
-            );
-          })}
+        <Grid container className={classes.container} justify="center" alignItems="center" >
+          <Grid item xs={10} sm={6} md={3} xl={2} >
+            <Card>
+              <CardContent>
+                <Grid container spacing={24}>
+                  {this.props.view.get("modules").map((module, index)=>{
+                    return (
+                      <Grid item key={module.get("name")} xs={12} >
+                        {this.module(module, index)}
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
         {this.props.view.get("dialogs").map((dialog)=>{
           return (
@@ -98,7 +110,7 @@ class View extends React.Component {
   }
 }
 
-View.propTypes = {
+Login.propTypes = {
   view: ImmutablePropTypes.map,
   viewName: PropTypes.string,
   classes: PropTypes.object
@@ -108,4 +120,4 @@ const mapStateToProps = (state) => ({
   data: state.get("data").toJS()
 });
 
-export default connect(mapStateToProps, null)(withStyles(styles)(View));
+export default connect(mapStateToProps, null)(withStyles(styles)(Login));
