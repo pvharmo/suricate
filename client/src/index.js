@@ -27,13 +27,13 @@ export const store = createStore(
   )
 );
 
-if (process.env.NODE_ENV !== 'production') {
-  if (module.hot) {
-    module.hot.accept('./redux/reducers', () => {
-      store.replaceReducer(rootReducer);
-    });
-  }
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   if (module.hot) {
+//     module.hot.accept('./redux/reducers', () => {
+//       store.replaceReducer(connectRouter(history)(rootReducer));
+//     });
+//   }
+// }
 
 sagaMiddleware.run(rootSaga);
 

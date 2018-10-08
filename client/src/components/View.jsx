@@ -4,7 +4,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Login from './Login';
 import MainContainer from './MainContainer';
 
+import { connect } from "react-redux";
+
 class View extends React.Component {
+
   render() {
     switch (this.props.view.get("template")) {
     case "login":
@@ -19,4 +22,10 @@ View.propTypes ={
   view: ImmutablePropTypes.map
 };
 
-export default View;
+const mapStateToProps = (state) => ({
+  data: state.get("data").toJS(),
+  mainMenu: state.get("mainMenu")
+});
+
+
+export default connect(mapStateToProps, null)(View);

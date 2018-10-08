@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Edit from '@material-ui/icons/Edit';
 import { connect } from "react-redux";
-import query from 'connector';
+import query from 'connectors/connector';
 import actionsHandler from 'redux/actions';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 

@@ -18,6 +18,14 @@ const styles = theme => ({
 
 class App extends React.Component {
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.pathname !== nextProps.pathname) {
+      console.log("different");
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   routes(item) {
     let route = (<Route path={item.link} render={()=> <View view={this.props.views.get(item.name)} />} key={item.name} />);
@@ -34,7 +42,7 @@ class App extends React.Component {
   }
 
   render() {
-    const {classes} = this.props;
+    const {classes, views} = this.props;
 
     return (
       <div className={classes.root}>
@@ -43,6 +51,7 @@ class App extends React.Component {
             {this.props.mainMenu.map((route)=>{
               return this.routes(route.toJS());
             })}
+            <Route path={"/"} render={()=> <View view={this.props.views.get(views.get("main"))} />} />
           </Switch>}
         </div>
       </div>
@@ -59,7 +68,8 @@ App.propTypes ={
 const mapStateToProps = (state) => {
   return {
     views: state.get('views'),
-    mainMenu: state.get("mainMenu")
+    mainMenu: state.get("mainMenu"),
+    pathname: state.getIn(["router", "location", "pathname"])
   };
 };
 

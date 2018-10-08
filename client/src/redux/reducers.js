@@ -5,7 +5,7 @@ import views from 'data/views';
 import mainMenu from 'data/mainMenu';
 import data from 'data/table';
 
-import query from 'connector';
+import query from 'connectors/connector';
 
 
 const initialState = fromJS({

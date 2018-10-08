@@ -1,5 +1,6 @@
 
 const view = {
+  main: "authors",
   login: {
     name: "login",
     template: "login",

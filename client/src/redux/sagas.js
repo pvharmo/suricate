@@ -1,5 +1,6 @@
-import query from 'connector';
+import query from 'connectors/connector';
 import { put, call, takeEvery, all } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 
 export function* insertRecord({payload}){
   let values = payload.values;
@@ -21,10 +22,11 @@ function* deleteRecord({payload}) {
 }
 
 function* login({payload}) {
-  // let username = payload.username;
-  // let password = payload.password;
-  const auth = yield call(query, "login");
+  let username = payload.values.username;
+  let password = payload.values.password;
+  const auth = yield call(query, "login", {username, password});
   yield put({type: "SAVE_LOGIN", payload:{auth, ...payload}});
+  yield put(push('/'));
 }
 
 export default function* rootSaga() {
