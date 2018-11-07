@@ -13,18 +13,18 @@ class View extends React.Component {
     case "login":
       return <Login view={this.props.view} />;
     default:
-      return <MainContainer view={this.props.view} />;
+      return <MainContainer  />;
     }
   }
 }
 
 View.propTypes ={
-  view: ImmutablePropTypes.map
+  view: ImmutablePropTypes.map,
 };
 
 const mapStateToProps = (state) => ({
   data: state.get("data").toJS(),
-  mainMenu: state.get("mainMenu")
+  mainMenu: state.get("mainMenu"),
 });
 
 

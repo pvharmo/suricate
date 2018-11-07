@@ -38,7 +38,7 @@ const modifyData = (options) => {
 };
 
 const deleteRecord = (options) => {
-  strapi.deleteEntry(options.collection, options.id);
+  strapi.deleteEntry(options.collection, options.values.id);
 };
 
 const getData = async (options) => {

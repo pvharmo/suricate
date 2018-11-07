@@ -54,11 +54,11 @@ class Login extends React.Component {
   }
 
   handleAction(view, action) {
-    actionsHandler(view, action);
+    actionsHandler(action, null, view);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, modules } = this.props;
 
     return (
       <div className={classes.root}>
@@ -67,7 +67,8 @@ class Login extends React.Component {
             <Card>
               <CardContent>
                 <Grid container spacing={24}>
-                  {this.props.view.get("modules").map((module, index)=>{
+                  {this.props.view.get("modules").map((moduleName, index)=>{
+                    const module = modules.find({value: moduleName, key: "name"});
                     return (
                       <Grid item key={module.get("name")} xs={12} >
                         {this.module(module, index)}
@@ -113,11 +114,13 @@ class Login extends React.Component {
 Login.propTypes = {
   view: ImmutablePropTypes.map,
   viewName: PropTypes.string,
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  modules: ImmutablePropTypes.list
 };
 
 const mapStateToProps = (state) => ({
-  data: state.get("data").toJS()
+  data: state.get("data").toJS(),
+  moduels: state.get("modules")
 });
 
 export default connect(mapStateToProps, null)(withStyles(styles)(Login));

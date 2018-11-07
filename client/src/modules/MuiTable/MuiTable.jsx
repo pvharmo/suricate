@@ -47,7 +47,7 @@ class MuiTable extends React.Component {
 
   async edit(id) {
     let data = await db.books.where({id}).toArray();
-    actionsHandler(this.props.view, this.props.module.get("onClickRow"), {values: data[0]});
+    actionsHandler(this.props.module.get("onClickRow"), {values: data[0]}, this.props.view);
     // this.props.actions.editRow({view: this.props.viewName, moduleIndex: this.props.index, values:data});
   }
 

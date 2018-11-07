@@ -1,6 +1,6 @@
 import { store } from 'index.js';
 
-export const action = (type, payload) => ({
+export const reduxAction = (type, payload) => ({
   type, payload
 });
 
@@ -18,14 +18,21 @@ const params = (view, action, props) => {
   return {view, dialogIndex, action, ...props};
 };
 
-const triggerAction = (view, actions, props) => {
+export const triggerAction = (action, props, view) => {
+  const parameters = params(view, action, props);
+  store.dispatch(
+    reduxAction(action, parameters)
+  );
+};
+
+const triggerMultipleActions = (actions, props, view) => {
   for (let i = 0; i < actions.size; i++) {
     const actionType = actions.getIn([i, "action"]);
     const parameters = params(view, actions.get(i), props);
     store.dispatch(
-      action(actionType, parameters)
+      reduxAction(actionType, parameters)
     );
   }
 };
 
-export default triggerAction;
+export default triggerMultipleActions;

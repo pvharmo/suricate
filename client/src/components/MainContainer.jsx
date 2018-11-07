@@ -41,6 +41,16 @@ const styles = theme => ({
 
 class MainContainer extends React.Component {
 
+  shouldComponentUpdate(nextProps) {
+    let dialogs = nextProps.view.get("dialogs");
+    for (var i = 0; i < dialogs.size; i++) {
+      if (dialogs.getIn([i,"open"]) !== this.props.view.getIn(["dialogs", i , "open"])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   module(module, index) {
     switch (module.get("type")) {
     case "form":
@@ -59,11 +69,11 @@ class MainContainer extends React.Component {
   }
 
   handleAction(view, action) {
-    actionsHandler(view, action);
+    actionsHandler(action, null, view);
   }
 
   render() {
-    const { classes, mainMenu, view } = this.props;
+    const { classes, mainMenu, view, modules } = this.props;
 
     return (
 
@@ -72,7 +82,8 @@ class MainContainer extends React.Component {
         <Nav menu={mainMenu.toJS()} />
         <div className={classes.container} >
           <Grid container spacing={24}>
-            {view.get("modules").map((module, index)=>{
+            {view.get("modules").map((moduleName, index)=>{
+              const module = modules.find(x => x.get("name") === moduleName);
               return (
                 <Grid item key={module.get("name")} xs={12} >
                   {this.module(module, index)}
@@ -85,9 +96,10 @@ class MainContainer extends React.Component {
               <Dialog
                 key={dialog.get("name")}
                 open={dialog.get("open")}
-                onClose={this.handleAction.bind(this, view, fromJS([{action: "closeDialog", dialog: dialog.get("name")}]))}>
+                onClose={this.handleAction.bind(this, view, fromJS([{action: "CLOSE_DIALOG", dialog: dialog.get("name")}]))}>
                 <DialogTitle>{dialog.get("title")}</DialogTitle>
-                {dialog.get("modules").map((module, moduleIndex)=>{
+                {dialog.get("modules").map((moduleName, moduleIndex)=>{
+                  const module = modules.find(x => x.get("name") === moduleName);
                   return (
                     <Grid item key={module.get("name")}>
                       {this.module(module, moduleIndex)}
@@ -116,12 +128,21 @@ MainContainer.propTypes = {
   view: ImmutablePropTypes.map,
   viewName: PropTypes.string,
   classes: PropTypes.object,
-  mainMenu: ImmutablePropTypes.list
+  mainMenu: ImmutablePropTypes.list,
+  modules: ImmutablePropTypes.list
 };
 
-const mapStateToProps = (state) => ({
-  data: state.get("data").toJS(),
-  mainMenu: state.get("mainMenu")
-});
+const mapStateToProps = (state) => {
+  let location = state.getIn(["router", "location", "pathname"]).substr(1);
+  if (location === "") {
+    location = state.getIn(["views", "main"]);
+  }
+  return {
+    data: state.get("data").toJS(),
+    mainMenu: state.get("mainMenu"),
+    view: state.getIn(["views", location]),
+    modules: state.get("modules")
+  };
+};
 
 export default connect(mapStateToProps, null)(withStyles(styles)(MainContainer));

@@ -133,7 +133,7 @@ const radioGroup = (field, options, classes) => {
 
 const button = (field, form, options) => {
   const handleOnClick = () => {
-    actionsHandler(currentView, options.get("onClick"), {values: form.values});
+    actionsHandler(options.get("onClick"), {values: form.values}, currentView);
   };
   return (
     <Button onClick={handleOnClick.bind(this)} >{options.get("label")}</Button>
@@ -199,7 +199,7 @@ const FormGenerator = ({view, data, classes, module, ...options}) => {
     <Formik
       initialValues={defaultValues}
       onSubmit={(values, actions)=>{
-        actionsHandler(view, module.get("onSubmit"), {values});
+        actionsHandler(module.get("onSubmit"), {values}, view);
       }}
       enableReinitialize
       render={({errors, touched, isSubmitting}) => (

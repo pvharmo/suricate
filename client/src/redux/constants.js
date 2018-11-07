@@ -10,3 +10,4 @@ export const SET_DEFAULT_VALUES = "SET_DEFAULT_VALUES";
 export const DELETE_RECORD = "DELETE_RECORD";
 export const LOGIN = "LOGIN";
 export const SAVE_LOGIN = "SAVE_LOGIN";
+export const GO_TO_LOGIN = "GO_TO_LOGIN";
