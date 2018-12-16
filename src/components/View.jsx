@@ -1,20 +1,29 @@
 import React from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
+import PropTypes from 'prop-types';
 
 import Login from './Login';
 import MainContainer from './MainContainer';
+import { ViewContext } from 'stores/ViewContext';
 
-function View(props) {
-  switch (props.view.get("template")) {
+function ViewSwitch(props) {
+  switch (props.template) {
   case "login":
-    return <Login view={props.view} />;
+    return <Login />;
   default:
     return <MainContainer />;
   }
 }
 
+function View(props) {
+  return (
+    <ViewContext.Provider value={props.view}>
+      <ViewSwitch template={props.view.template} />
+    </ViewContext.Provider>
+  );
+}
+
 View.propTypes ={
-  view: ImmutablePropTypes.map,
+  view: PropTypes.object,
 };
 
 

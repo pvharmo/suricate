@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormGenerator from 'modules/form/FormGenerator';
 
 import bg from 'bg.jpg';
+import ModuleSwitch from './internals/ModuleSwitch.jsx';
 
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -27,17 +27,6 @@ const styles = theme => ({
   },
 });
 
-function module(module, index) {
-  switch (module.get("type")) {
-  case "form":
-    return (
-      <FormGenerator index={index} view={this.props.view} module={module} fields={module.get("fields")} data={this.props.view.get("editValue")} />
-    );
-  default:
-    return <p>Type de module non reconnu</p>;
-  }
-}
-
 function Login(props) {
   const { classes, modules, view } = props;
 
@@ -52,7 +41,7 @@ function Login(props) {
                   const module = modules.find({ value: moduleName, key: "name" });
                   return (
                     <Grid item key={module.get("name")} xs={12} >
-                      {module(module, index)}
+                      <ModuleSwitch module={module} index={index} />
                     </Grid>
                   );
                 })}

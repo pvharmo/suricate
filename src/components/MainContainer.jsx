@@ -1,17 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
-// import MuiTable from 'modules/MuiTable/MuiTable';
-import FormGenerator from 'modules/form/FormGenerator';
+import ModulesGrid from './internals/ModulesGrid';
+import Dialogs from './internals/Dialogs';
+import { ViewContext } from 'stores/ViewContext';
 
-import Nav from 'components/nav/Nav';
+import Nav from 'components/Nav';
 import TopBar from 'components/TopBar';
 
+import mainMenu from 'data/mainMenu';
+
 import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -33,69 +31,25 @@ const styles = theme => ({
   }
 });
 
-
-function module(props) {
-  const { module, index, view, viewName } = props;
-  switch (module.get("type")) {
-  case "form":
-    return (
-      <Card>
-        <CardContent>
-          <FormGenerator index={index} view={view} module={module} fields={module.get("fields")} data={view.get("editValue")} />
-        </CardContent>
-      </Card>
-    );
-  // case "table":
-  //   return <MuiTable viewName={viewName} view={view} index={index} module={module} />;
-  default:
-    return <p>Type de module non reconnu</p>;
-  }
-}
-
 function handleAction(view, action) {
   // actionsHandler(action, null, view);
 }
 
 function MainContainer(props) {
-  const { classes, mainMenu, view, modules } = props;
+  const { classes } = props;
+  const view = useContext(ViewContext);
 
   return (
 
     <div className={classes.root}>
       <TopBar />
-      <Nav menu={mainMenu.toJS()} />
+      <Nav menu={mainMenu} />
       <div className={classes.container} >
-        <Grid container spacing={24}>
-          {view.get("modules").map((moduleName, index) => {
-            const module = modules.find(x => x.get("name") === moduleName);
-            return (
-              <Grid item key={module.get("name")} xs={12} >
-                {module(module, index)}
-              </Grid>
-            );
-          })}
-        </Grid>
-        {view.get("dialogs").map((dialog) => {
-          return (
-            <Dialog
-              key={dialog.get("name")}
-              open={dialog.get("open")}
-              onClose={handleAction.bind(this, view, [{ action: "CLOSE_DIALOG", dialog: dialog.get("name") }])}>
-              <DialogTitle>{dialog.get("title")}</DialogTitle>
-              {dialog.get("modules").map((moduleName, moduleIndex) => {
-                const module = modules.find(x => x.get("name") === moduleName);
-                return (
-                  <Grid item key={module.get("name")}>
-                    {module(module, moduleIndex)}
-                  </Grid>
-                );
-              })}
-            </Dialog>
-          );
-        })}
-        {view.get("actionButton") &&
+        <ModulesGrid />
+        <Dialogs />
+        {view.actionButton &&
           <Button
-            onClick={handleAction.bind(this, view, view.get("actionButton"))}
+            onClick={handleAction.bind(this, view, view.actionButton)}
             variant="fab"
             className={classes.fab}
             color="primary">

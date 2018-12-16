@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from "react-router-dom";
 
 import View from 'components/View';
+import mainMenu from 'data/mainMenu';
+import views from 'data/views';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -29,11 +31,11 @@ function routes(item, views) {
 }
 
 function App(props) {
-  const { classes, views, user, pathname, mainMenu } = props;
-  if (user.isEmpty() && pathname !== "/login") {
+  const { classes, user, pathname } = props;
+  if (user && pathname !== "/login") {
     return <Redirect to='/login' />;
   }
-  else if (!user.isEmpty() && pathname === "/login") {
+  else if (!user && pathname === "/login") {
     return <Redirect to='/' />;
   } else {
     return (
@@ -41,9 +43,9 @@ function App(props) {
         <div className={classes.mainContainer} >
           {<Switch>
             {mainMenu.map((route) => {
-              return routes(route.toJS(), views);
+              return routes(route, views);
             })}
-            <Route exact path={"/"} render={() => <View view={views.get(views.get("main"))} />} />
+            <Route exact path={"/"} render={() => <View view={views[views.main]} />} />
           </Switch>}
         </div>
       </div>

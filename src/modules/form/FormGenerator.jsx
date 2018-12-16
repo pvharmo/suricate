@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Formik, Field, Form } from 'formik';
-import actionsHandler from 'redux/actions';
+
+import { ViewContext } from 'stores/ViewContext';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -45,13 +45,13 @@ const textField = (field, options, classes) => {
   return (
     <FormControl className={classes.formControl}>
       <TextField
-        id={options.get("name")}
-        name={options.get("name")}
-        label={options.get("label")}
-        value={field.value[options.get("name")] || ""}
+        id={options.name}
+        name={options.name}
+        label={options.label}
+        value={field.value[options.name] || ""}
         onChange={field.onChange}
-        type={options.get("type")}
-        {...options.get("options")}
+        type={options.type}
+        {...options.options}
         fullWidth />
     </FormControl>
   );
@@ -67,16 +67,16 @@ const textField = (field, options, classes) => {
 const selectField = (field, options, classes) => {
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel htmlFor={options.get("name")}>{options.get("label")}</InputLabel>
+      <InputLabel htmlFor={options.name}>{options.label}</InputLabel>
       <Select
-        value={field.value[options.get("name")] || ""}
-        name={options.get("name")}
+        value={field.value[options.name] || ""}
+        name={options.name}
         onChange={field.onChange}
         inputProps={{
-          id: options.get("name")
+          id: options.name
         }}>
-        {options.get("items").map((item)=> {
-          return <MenuItem key={item.get("label") + item.get("value")} value={item.get("value")}>{item.get("label")}</MenuItem>;
+        {options.items.map((item)=> {
+          return <MenuItem key={item.label + item.value} value={item.value}>{item.label}</MenuItem>;
         })}
       </Select>
     </FormControl>
@@ -96,12 +96,12 @@ const checkbox = (field, options, classes) => {
       <FormControlLabel
         control={
           <Checkbox
-            name={options.get("name")}
-            checked={field.value[options.get("name")] ? true : false}
+            name={options.name}
+            checked={field.value[options.name] ? true : false}
             onChange={field.onChange}
           />
         }
-        label={options.get("label")}
+        label={options.label}
       />
     </FormControl>
   );
@@ -111,18 +111,18 @@ const radioGroup = (field, options, classes) => {
   return (
     <FormControl className={classes.formControl}>
       <RadioGroup
-        name={options.get("name")}
+        name={options.name}
         onChange={field.handleChange}
-        value={field.value[options.get("name")]}>
-        {options.get("items").map((item)=>{
+        value={field.value[options.name]}>
+        {options.items.map((item)=>{
           return (
             <FormControlLabel
-              key={item.get("value")}
+              key={item.value}
               control={
                 <Radio />
               }
-              label={item.get("label")}
-              value={item.get("value")}
+              label={item.label}
+              value={item.value}
             />
           );
         })}
@@ -133,10 +133,10 @@ const radioGroup = (field, options, classes) => {
 
 const button = (field, form, options) => {
   const handleOnClick = () => {
-    actionsHandler(options.get("onClick"), {values: form.values}, currentView);
+    // actionsHandler(options.get("onClick"), {values: form.values}, currentView);
   };
   return (
-    <Button onClick={handleOnClick.bind(this)} >{options.get("label")}</Button>
+    <Button onClick={handleOnClick.bind(this)} >{options.label}</Button>
   );
 };
 
@@ -144,19 +144,19 @@ const title = (field, options) => {
   return (
     <div>
       <Divider style={{marginBottom: 25}} />
-      <Typography variant={options.variant} >{options.get("label")}</Typography>
+      <Typography variant={options.variant} >{options.label}</Typography>
     </div>
   );
 };
 
 const submitButton = (field, form, options) => {
   return (
-    <Button type="submit" >{options.get("label")}</Button>
+    <Button type="submit" >{options.label}</Button>
   );
 };
 
 const fieldSelector = ({field, form, options, classes}) => {
-  switch (options.get("type")) {
+  switch (options.type) {
   case "date":
   case "number":
   case "text":
@@ -183,13 +183,14 @@ const fieldSelector = ({field, form, options, classes}) => {
   }
 };
 
-const FormGenerator = ({view, data, classes, module, ...options}) => {
+const FormGenerator = ({ data, classes, module, ...options }) => {
+  const view = useContext(ViewContext);
   currentView = view;
   let defaultValues = {};
   if (view) {
-    defaultValues = view.get("defaultValues");
+    defaultValues = view.defaultValues;
     if (defaultValues) {
-      defaultValues = defaultValues.find(function (obj){return obj.module === module.get("name");});
+      defaultValues = defaultValues.find(function (obj){return obj.module === module.name;});
       if (defaultValues) {
         defaultValues = defaultValues.values;
       }
@@ -199,32 +200,32 @@ const FormGenerator = ({view, data, classes, module, ...options}) => {
     <Formik
       initialValues={defaultValues}
       onSubmit={(values, actions)=>{
-        actionsHandler(module.get("onSubmit"), {values}, view);
+        // actionsHandler(module.get("onSubmit"), {values}, view);
       }}
       enableReinitialize
       render={({errors, touched, isSubmitting}) => (
         <Form>
           <Grid container spacing={16}>
-            {module.get("fields").map((fields)=>{
-              if (!fields.get("width")) {
-                fields.set("width", {xs:12});
+            {module.fields.map((fields)=>{
+              if (!fields.width) {
+                fields.width = {xs:12};
               }
-              if (fields.get("type") === "expansion-panel") {
+              if (fields.type === "expansion-panel") {
                 return (
                   <Grid key={fields.title} item {...fields.width}>
                     <ExpansionPanel>
                       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="title" >{fields.get("title")}</Typography>
+                        <Typography variant="title" >{fields.title}</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <Grid container spacing={16}>
-                          {fields.get("fields").map((subfield)=>{
-                            if (!subfield.get("width")) {
-                              subfield.set("width", {xs:12});
+                          {fields.fields.map((subfield)=>{
+                            if (!subfield.width) {
+                              subfield.width = {xs:12};
                             }
                             return (
-                              <Grid key={subfield.get("name") + subfield.get("label")} item {...subfield.width}>
-                                <Field key={subfield.get("name")} options={subfield} classes={classes} component={fieldSelector} />
+                              <Grid key={subfield.name + subfield.label} item {...subfield.width}>
+                                <Field key={subfield.name} options={subfield} classes={classes} component={fieldSelector} />
                               </Grid>
                             );
                           })}
@@ -235,8 +236,8 @@ const FormGenerator = ({view, data, classes, module, ...options}) => {
                 );
               } else {
                 return (
-                  <Grid key={fields.get("name") + fields.get("label")} item {...fields.get("width").toJS()}>
-                    <Field key={fields.get("name")} options={fields} classes={classes} component={fieldSelector} />
+                  <Grid key={fields.name + fields.label} item {...fields.width}>
+                    <Field key={fields.name} options={fields} classes={classes} component={fieldSelector} />
                   </Grid>
                 );
               }
@@ -249,10 +250,10 @@ const FormGenerator = ({view, data, classes, module, ...options}) => {
 };
 
 FormGenerator.propTypes ={
-  view: ImmutablePropTypes.map,
+  view: PropTypes.object,
   data: PropTypes.object,
   classes: PropTypes.object,
-  module: ImmutablePropTypes.map,
+  module: PropTypes.object,
   options: PropTypes.object
 };
 

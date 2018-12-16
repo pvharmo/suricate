@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from "react-router-dom";
 
@@ -15,15 +15,11 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const drawerWidth = 230;
 
-const styles = theme => ({
+const styles = () => ({
   drawerStyle: {
     width: drawerWidth
   }
 });
-
-handleCollapse(item) {
-  this.setState({[item]: !this.state[item]});
-}
 
 function link(item, nestingLevel) {
   return(
@@ -39,17 +35,18 @@ function link(item, nestingLevel) {
 
 function collapse(item, nestingLevel) {
   ++nestingLevel;
+  const [collapse, setCollapse] = useState(false);
   return (
     <div key={item.name}>
-      <ListItem button onClick={this.handleCollapse.bind(this, item.name)} style={{ paddingLeft: 8 * (nestingLevel - 1) + 24 }}>
+      <ListItem button onClick={setCollapse(!collapse)} style={{ paddingLeft: 8 * (nestingLevel - 1) + 24 }}>
         <ListItemText inset primary="Views" />
-        {this.state[item.name] ? <ExpandLess /> : <ExpandMore />}
+        {collapse[item.name] ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={this.state[item.name]} timeout="auto" unmountOnExit>
         {item.submenu.map((item) => {
-          let menu = this.link(item, nestingLevel);
+          let menu = link(item, nestingLevel);
           if (item.type === "collapse") {
-            menu = this.collapse(item, nestingLevel);
+            menu = collapse(item, nestingLevel);
           }
           return menu;
         })}
@@ -80,6 +77,10 @@ function Nav(props) {
     </Drawer>
   );
 }
+
+// function Nav() {
+//   return <div></div>;
+// }
 
 Nav.propTypes ={
   menu: PropTypes.array,

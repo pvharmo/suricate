@@ -10,7 +10,7 @@ const view = {
   authors: {
     name: "authors",
     defaultValues: [],
-    modules: ["listTable"],
+    modules: ["listTable", "new-book"],
     dialogs: [
       {
         name: "new-book",
