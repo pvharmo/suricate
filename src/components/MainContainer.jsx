@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ModulesGrid from './internals/ModulesGrid';
 import Dialogs from './internals/Dialogs';
 import { ViewContext } from 'stores/ViewContext';
+import PubSub from "pubsub-js";
 
 import Nav from 'components/Nav';
 import TopBar from 'components/TopBar';
@@ -31,8 +32,10 @@ const styles = theme => ({
   }
 });
 
-function handleAction(view, action) {
-  // actionsHandler(action, null, view);
+function handleAction(view, actions) {
+  for(let i = 0; i < actions.length; i++) {
+    PubSub.publish(actions[i].action + actions[i].dialog, actions[i]);
+  }
 }
 
 function MainContainer(props) {
